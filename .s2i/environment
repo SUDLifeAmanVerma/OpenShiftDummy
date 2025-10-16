@@ -1,1 +1,1 @@
-"DOTNET_RESTORE_SOURCES=./offline-nuget-packages" 
+DOTNET_RESTORE_SOURCES=./offline-nuget-packages
