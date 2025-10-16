@@ -18,4 +18,8 @@
     <Folder Include="offline-nuget-packages\" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Include=".s2i\environment" />
+  </ItemGroup>
+
 </Project>
