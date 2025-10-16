@@ -10,15 +10,19 @@ namespace OpenShiftDummy.Controllers
     public class ReadController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<ReadController> _logger;
 
-        public ReadController(IConfiguration configuration)
+
+        public ReadController(IConfiguration configuration, ILogger<ReadController> logger)
         {
             _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpGet]
         public IActionResult GetProducts()
         {
+            _logger.LogInformation("Read Controller");
             List<Product> products = new();
             string query = "SELECT * FROM Products";
             using SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));

@@ -10,15 +10,19 @@ namespace OpenShiftDummy.Controllers
     public class UpdateController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<UpdateController> _logger;
 
-        public UpdateController(IConfiguration configuration)
+
+        public UpdateController(IConfiguration configuration, ILogger<UpdateController> logger)
         {
             _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpPut]
         public IActionResult UpdateProduct([FromBody] Product product)
         {
+            _logger.LogInformation("Update Controller");
             string query = "UPDATE Products SET Name = @Name, Price = @Price WHERE Id = @Id";
             using SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
             using SqlCommand cmd = new SqlCommand(query, conn);

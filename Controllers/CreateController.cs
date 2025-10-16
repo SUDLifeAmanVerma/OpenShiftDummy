@@ -10,15 +10,19 @@ namespace OpenShiftDummy.Controllers
     public class CreateController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<CreateController> _logger;
 
-        public CreateController(IConfiguration configuration)
+
+        public CreateController(IConfiguration configuration, ILogger<CreateController> logger)
         {
             _configuration = configuration;
+            _logger = logger;
         }
-
+        
         [HttpPost]
         public IActionResult CreateProduct([FromBody] Product product)
         {
+            _logger.LogInformation("Create product Controller");
             string query = "INSERT INTO Products (Name, Price) VALUES (@Name, @Price)";
             using SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
             using SqlCommand cmd = new SqlCommand(query, conn);

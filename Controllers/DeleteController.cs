@@ -9,15 +9,19 @@ namespace OpenShiftDummy.Controllers
     public class DeleteController : ControllerBase
     {
         private readonly IConfiguration _configuration;
+        private readonly ILogger<DeleteController> _logger;
 
-        public DeleteController(IConfiguration configuration)
+
+        public DeleteController(IConfiguration configuration, ILogger<DeleteController> logger)
         {
             _configuration = configuration;
+            _logger = logger;
         }
 
         [HttpDelete("{id}")]
         public IActionResult DeleteProduct(int id)
         {
+            _logger.LogInformation("Delete Controller.");
             string query = "DELETE FROM Products WHERE Id = @Id";
             using SqlConnection conn = new SqlConnection(_configuration.GetConnectionString("DefaultConnection"));
             using SqlCommand cmd = new SqlCommand(query, conn);
