@@ -34,7 +34,11 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
+//app.UseHttpsRedirection();
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(8080); // Match the OpenShift service port
+});
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
