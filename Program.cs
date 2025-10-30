@@ -24,6 +24,10 @@ builder.Host.UseSerilog(); // Use Serilog as the logging provider
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(8080); // Match the OpenShift service port
+});
 
 var app = builder.Build();
 
@@ -35,10 +39,7 @@ if (app.Environment.IsDevelopment() || app.Environment.IsProduction())
 }
 
 //app.UseHttpsRedirection();
-builder.WebHost.ConfigureKestrel(options =>
-{
-    options.ListenAnyIP(8080); // Match the OpenShift service port
-});
+
 app.UseAuthorization();
 app.MapControllers();
 app.Run();
