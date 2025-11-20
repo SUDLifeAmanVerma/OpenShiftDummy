@@ -31,37 +31,26 @@ var builder = WebApplication.CreateBuilder(args);
 
 //builder.Host.UseSerilog();
 
-var assemblyLocation = Assembly.GetExecutingAssembly().Location;
-var directory = new DirectoryInfo(Path.GetDirectoryName(assemblyLocation));
-var Curdirectory = string.Empty;
-// Traverse up until we find the project root
-while (directory != null)
-{
-    if (File.Exists(Path.Combine(directory.FullName, "appsettings.json"))
-        || Directory.GetFiles(directory.FullName, "*.csproj").Length > 0)
-    {
-        Curdirectory= directory.FullName;
-    }
-    directory = directory.Parent;
-}
-var logDir = Path.Combine(Curdirectory, "Logger");
+var logDir = Path.Combine("/tmp", "Logger");
 Directory.CreateDirectory(logDir);
 
-
 Log.Logger = new LoggerConfiguration()
-    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning) // Suppress Microsoft logs
-    .MinimumLevel.Override("System", LogEventLevel.Warning)    // Suppress System logs
-    .MinimumLevel.Information()                                // Allow your logs
-    .WriteTo.Console()
+    .MinimumLevel.Override("Microsoft", LogEventLevel.Warning)
+    .MinimumLevel.Override("System", LogEventLevel.Warning)
+    .MinimumLevel.Information()
+    .WriteTo.Console(
+        outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
+    )
     .WriteTo.File(
-        path: Path.Combine(logDir,"/log-.txt"),
+        path: Path.Combine(logDir, "log-.txt"), // <-- no leading slash
         rollingInterval: RollingInterval.Day,
+        retainedFileCountLimit: 14,              // avoid unbounded growth
+        shared: true,
         outputTemplate: "{Timestamp:yyyy-MM-dd HH:mm:ss} [{Level:u3}] {Message:lj}{NewLine}{Exception}"
     )
     .CreateLogger();
 
-
-builder.Host.UseSerilog(); // Use Serilog as the logging provider
+builder.Host.UseSerilog();
 
 // Add services to the container.
 builder.Services.AddControllers();
